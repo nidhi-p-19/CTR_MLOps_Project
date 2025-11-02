@@ -1,0 +1,5 @@
+outs:
+- md5: 6ba791d1403ccf61a9337e94dc2bb3bd
+  size: 8305316
+  hash: md5
+  path: 50krecords.csv
