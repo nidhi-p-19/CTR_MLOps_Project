@@ -57,3 +57,8 @@ dist/
 *.zip
 *.tar
 *.gz
+
+# --- DVC Lock and Temp files (safe to ignore on GitHub) ---
+*.dvc.lock
+*.dvc.tmp
+
