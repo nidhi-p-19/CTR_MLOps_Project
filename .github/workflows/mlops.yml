@@ -3,12 +3,8 @@ name: CTR MLOps Pipeline 🚀
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-  schedule:
-    # Run every Sunday 7 AM UTC (weekly drift + retrain)
-    - cron: "0 7 * * 0"
-  workflow_dispatch: # Allow manual run from GitHub UI
+  workflow_dispatch:
+  workflow_call:
 
 jobs:
   mlops-pipeline:
