@@ -7,7 +7,9 @@ data/*
 __pycache__/
 .venv/
 *.log
+# Ignore general lock files but keep DVC lock
 *.lock
+!dvc.lock
 *.tmp
 
 # Ignore MLflow artifacts
