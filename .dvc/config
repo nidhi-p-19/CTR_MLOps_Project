@@ -1,0 +1,4 @@
+[core]
+    remote = origin
+['remote "origin"']
+    url = https://dagshub.com/nidhi-p-19/CTR_MLOps_Project.dvc
