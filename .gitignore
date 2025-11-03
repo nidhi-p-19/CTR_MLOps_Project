@@ -1,0 +1,59 @@
+# ===========================
+# PYTHON / MLOPS IGNORE FILE
+# ===========================
+
+# --- Virtual Environment ---
+venv/
+.env/
+*.env
+
+# --- Python Cache ---
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pkl
+*.pickle
+
+# --- IDE/Editor files ---
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# --- OS files ---
+.DS_Store
+Thumbs.db
+
+# --- Logs & Outputs ---
+*.log
+logs/
+*.tmp
+*.bak
+
+# --- MLflow Tracking ---
+mlruns/
+mlartifacts/
+*.mlmodel
+
+# --- DVC Cache & Temp ---
+.dvc/cache/
+.dvc/tmp/
+
+# --- Data & Models (tracked via DVC) ---
+data/
+model/
+
+# --- Notebooks (optional if large) ---
+*.ipynb_checkpoints
+*.ipynb
+
+# --- Build / Dist (for packaging) ---
+build/
+dist/
+*.egg-info/
+
+# --- Misc ---
+*.zip
+*.tar
+*.gz
