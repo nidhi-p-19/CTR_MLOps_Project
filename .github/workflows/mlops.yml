@@ -1,18 +1,70 @@
-name: CTR_MLOps_Pipeline
+name: CTR MLOps Pipeline 🚀
+
 on:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  schedule:
+    # Run every Sunday 7 AM UTC (weekly drift + retrain)
+    - cron: "0 7 * * 0"
+  workflow_dispatch: # Allow manual run from GitHub UI
 
 jobs:
-  retrain:
+  mlops-pipeline:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
-      - name: Setup Python
-        uses: actions/setup-python@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: "3.11"
+
       - name: Install dependencies
-        run: pip install -r requirements.txt
-      - name: Retrain Logistic Regression CTR Model
-        run: python train.py
+        run: |
+          python -m pip install --upgrade pip
+          pip install pandas lightgbm dvc mlflow joblib fastapi uvicorn
+          pip install "pydantic==1.10.9" "typing-extensions==4.8.0" "evidently==0.4.9" "numpy<2.0"
+
+      # ============================
+      # 1️⃣ Data + Model Versioning
+      # ============================
+      - name: Reproduce DVC pipeline
+        run: |
+          dvc pull || echo "No remote found, skipping pull."
+          dvc repro || echo "No changes detected."
+
+      # ============================
+      # 2️⃣ Model Drift Monitoring
+      # ============================
+      - name: Run Evidently drift check
+        run: |
+          mkdir -p reports
+          python monitor_drift.py
+
+      # ============================
+      # 3️⃣ Auto-Retrain if Drift Found
+      # ============================
+      - name: Auto Retrain if drift > threshold
+        run: |
+          drift_flag=$(grep -c "Data drift detected" reports/drift_report.html || true)
+          if [ "$drift_flag" -gt 0 ]; then
+            echo "⚠️ Significant drift detected! Retraining model..."
+            python train.py
+          else
+            echo "✅ No significant drift. Skipping retrain."
+          fi
+
+      # ============================
+      # 4️⃣ Commit & Push Reports/Model
+      # ============================
+      - name: Commit and push updated files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add reports/drift_report.html model/ctr_model_lgb.pkl || true
+          git commit -m "🤖 Auto-update: drift report & retrained model [skip ci]" || echo "No new changes."
+          git push
