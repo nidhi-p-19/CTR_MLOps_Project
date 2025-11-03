@@ -1,64 +1,18 @@
-# ===========================
-# PYTHON / MLOPS IGNORE FILE
-# ===========================
+# Ignore raw data but keep DVC metadata
+data/*
+!data/*.dvc
+!data/.gitignore
 
-# --- Virtual Environment ---
-venv/
-.env/
-*.env
-
-# --- Python Cache ---
+# Ignore common unnecessary folders
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
-*.pkl
-*.pickle
-
-# --- IDE/Editor files ---
-.vscode/
-.idea/
-*.sublime-project
-*.sublime-workspace
-
-# --- OS files ---
-.DS_Store
-Thumbs.db
-
-# --- Logs & Outputs ---
+.venv/
 *.log
-logs/
+*.lock
 *.tmp
-*.bak
 
-# --- MLflow Tracking ---
+# Ignore MLflow artifacts
 mlruns/
-mlartifacts/
-*.mlmodel
+reports/
 
-# --- DVC Cache & Temp ---
-.dvc/cache/
-.dvc/tmp/
-
-# --- Data & Models (tracked via DVC) ---
-data/
-model/
-
-# --- Notebooks (optional if large) ---
-*.ipynb_checkpoints
-*.ipynb
-
-# --- Build / Dist (for packaging) ---
-build/
-dist/
-*.egg-info/
-
-# --- Misc ---
-*.zip
-*.tar
-*.gz
-
-# --- DVC Lock and Temp files (safe to ignore on GitHub) ---
-*.dvc.lock
-*.dvc.tmp
-
+# Ignore VS Code files
+.vscode/

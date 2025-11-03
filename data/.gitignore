@@ -1,1 +1,7 @@
-/50krecords.csv
+# Ignore raw CSVs and datasets
+*.csv
+*.parquet
+*.xlsx
+
+# But keep DVC tracking file
+!*.dvc
