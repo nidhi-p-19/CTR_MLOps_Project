@@ -11,10 +11,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4  # ✅ latest
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v5  # ✅ latest
+        uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
@@ -23,11 +23,25 @@ jobs:
           python -m pip install --upgrade pip
           pip install pandas scikit-learn mlflow dvc dagshub evidently
 
+      - name: Configure DagsHub remote
+        env:
+          DAGSHUB_USER: ${{ secrets.DAGSHUB_USER }}
+          DAGSHUB_TOKEN: ${{ secrets.DAGSHUB_TOKEN }}
+        run: |
+          dvc remote modify origin --local auth basic
+          dvc remote modify origin --local user $DAGSHUB_USER
+          dvc remote modify origin --local password $DAGSHUB_TOKEN
+
+      - name: Pull dataset from DagsHub
+        run: dvc pull
+
       - name: Run drift monitor
-        run: python monitor_drift.py
+        run: |
+          mkdir -p reports
+          python monitor_drift.py
 
       - name: Upload drift report
-        uses: actions/upload-artifact@v4  # ✅ use v4
+        uses: actions/upload-artifact@v4
         with:
           name: drift_report
           path: reports/drift_report.html
