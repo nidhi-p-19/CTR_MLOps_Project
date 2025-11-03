@@ -1,0 +1,36 @@
+schema: '2.0'
+stages:
+  train:
+    cmd: python train.py
+    deps:
+    - path: data/50krecords.csv
+      hash: md5
+      md5: 6ba791d1403ccf61a9337e94dc2bb3bd
+      size: 8305316
+    - path: train.py
+      hash: md5
+      md5: 149eae3c3b99a531339252f0ebcb2239
+      size: 2879
+    params:
+      params.yaml:
+        lightgbm.bagging_fraction: 0.8
+        lightgbm.feature_fraction: 0.8
+        lightgbm.lambda_l2: 1.0
+        lightgbm.learning_rate: 0.05
+        lightgbm.min_data_in_leaf: 200
+        lightgbm.num_leaves: 64
+        lightgbm.sample_size: 50000
+        lightgbm.seed: 42
+    outs:
+    - path: metrics/metrics.json
+      hash: md5
+      md5: 5da8c8f65fb2a6364ae7ff6f8200a153
+      size: 108
+    - path: model/ctr_model_lgb.pkl
+      hash: md5
+      md5: 25f212af1341e7be918d823d8242fcea
+      size: 710196
+    - path: model/feature_names.pkl
+      hash: md5
+      md5: e4fc959633cb5e9f4c505456f14e97db
+      size: 243

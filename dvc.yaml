@@ -1,0 +1,19 @@
+stages:
+  train:
+    cmd: python train.py
+    deps:
+      - train.py
+      - data/50krecords.csv
+    params:
+    - lightgbm.learning_rate
+    - lightgbm.num_leaves
+    - lightgbm.min_data_in_leaf
+    - lightgbm.feature_fraction
+    - lightgbm.bagging_fraction
+    - lightgbm.lambda_l2
+    - lightgbm.seed
+    - lightgbm.sample_size
+    outs:
+      - model/ctr_model_lgb.pkl
+      - model/feature_names.pkl
+      - metrics/metrics.json
