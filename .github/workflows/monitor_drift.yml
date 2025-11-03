@@ -1,48 +1,33 @@
-name: 📊 Weekly Model Drift Monitor
+name: Weekly Model Drift Monitor
 
 on:
+  workflow_dispatch:
   schedule:
-    - cron: "0 0 * * 1"   # Every Monday at midnight
-  workflow_dispatch:       # Allow manual trigger
+    - cron: "0 0 * * 0"  # Every Sunday at midnight UTC
 
 jobs:
-  detect_drift:
+  monitor:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4  # ✅ latest
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5  # ✅ latest
         with:
-          python-version: '3.10'
+          python-version: "3.11"
 
-      - name: Install Dependencies
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install pandas scikit-learn mlflow dvc dagshub evidently
 
-      - name: Run Drift Detection
-        id: drift_check
-        run: |
-          python monitor_drift.py > drift_output.txt || true
-          if grep -q "DRIFT DETECTED" drift_output.txt; then
-            echo "drift=true" >> $GITHUB_OUTPUT
-          else
-            echo "drift=false" >> $GITHUB_OUTPUT
-          fi
+      - name: Run drift monitor
+        run: python monitor_drift.py
 
-      - name: Upload Drift Report
-        if: always()
-        uses: actions/upload-artifact@v3
+      - name: Upload drift report
+        uses: actions/upload-artifact@v4  # ✅ use v4
         with:
-          name: drift-report
-          path: reports/
-
-      - name: Trigger MLOps Retraining Pipeline
-        if: steps.drift_check.outputs.drift == 'true'
-        uses: benc-uk/workflow-dispatch@v1
-        with:
-          workflow: mlops.yml
-          token: ${{ secrets.GITHUB_TOKEN }}
+          name: drift_report
+          path: reports/drift_report.html
